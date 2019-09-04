@@ -27,16 +27,17 @@ const importData = async () => {
   } catch (err) {
     console.log(err);
   }
+  process.exit();
 };
 
 const deleData = async () => {
   try {
     await Tour.deleteMany();
     console.log('Data deleted');
-    process.exit();
   } catch (err) {
     console.log(err);
   }
+  process.exit();
 };
 
 // Reading command --flag
