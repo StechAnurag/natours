@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -7,7 +8,9 @@ const tourSchema = new mongoose.Schema(
       type: String,
       unique: true,
       required: [true, 'A tour must have a name'],
-      trim: true
+      trim: true,
+      maxlength: [80, 'Name should be less than 80 chars long']
+      //validate: [validator.isAlphanumeric, 'Name should be only alphanumeric']
     },
     slug: String,
     duration: {
@@ -34,7 +37,16 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'A tour must have a price']
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function(val) {
+          // this - only points to current doc on NEW document creation, not on updation
+          return val < this.price; // 10 < 200
+        },
+        message: 'Discount ({VALUE}) should be less than regular price'
+      }
+    },
     summary: {
       type: String,
       trim: true,
@@ -95,19 +107,18 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
-// AGGREGATION MIDDLEWARE : runs before / after an aggregation
-tourSchema.pre('aggregate', function(next) {
-  //console.log(this.pipeline);
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
-
 tourSchema.post(/^find/, function(docs, next) {
   console.log(`This query took : ${Date.now() - this.startTime} ms.`);
   //console.log(docs);
   next();
 });
 
+// AGGREGATION MIDDLEWARE : runs before / after an aggregation
+tourSchema.pre('aggregate', function(next) {
+  //console.log(this.pipeline());
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
+});
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;

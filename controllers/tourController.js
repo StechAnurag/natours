@@ -69,7 +69,7 @@ module.exports = {
       console.log(error);
       res.status(400).json({
         status: 'fail',
-        message: 'Invalid data error'
+        message: error
       });
     }
   },
