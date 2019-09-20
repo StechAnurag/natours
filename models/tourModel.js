@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -10,7 +9,6 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a name'],
       trim: true,
       maxlength: [80, 'Name should be less than 80 chars long']
-      //validate: [validator.isAlphanumeric, 'Name should be only alphanumeric']
     },
     slug: String,
     duration: {
@@ -41,8 +39,8 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       validate: {
         validator: function(val) {
-          // this - only points to current doc on NEW document creation, not on updation
-          return val < this.price; // 10 < 200
+          // this - points to current doc on NEW doc creation, not on updation
+          return val < this.price;
         },
         message: 'Discount ({VALUE}) should be less than regular price'
       }
@@ -83,33 +81,14 @@ tourSchema.virtual('durationWeeks').get(function() {
 
 // DOCUMENT MIDDLEWARE : runs before .save() and .create()
 tourSchema.pre('save', function(next) {
-  //console.log(this); // this - points to currently processed doc
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-// tourSchema.pre('save', function(next) {
-//   console.log('will save the document');
-//   next();
-// });
-
-// tourSchema.post('save', function(doc, next) {
-//   console.log(doc);
-//   next();
-// });
-
 // QUERY MIDDLEWARE : runs before / after a query
 tourSchema.pre(/^find/, function(next) {
-  //console.log(this); // this - points query
   this.find({ secretTour: { $ne: true } });
 
-  this.startTime = Date.now();
-  next();
-});
-
-tourSchema.post(/^find/, function(docs, next) {
-  console.log(`This query took : ${Date.now() - this.startTime} ms.`);
-  //console.log(docs);
   next();
 });
 
