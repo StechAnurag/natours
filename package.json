@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "ndb server.js"
   },
   "author": "Anurag",
   "license": "ISC",
@@ -15,7 +16,11 @@
     "express": "^4.17.1",
     "mongoose": "^5.6.11",
     "morgan": "^1.9.1",
+    "nodemon": "^1.19.2",
     "slugify": "^1.3.5",
     "validator": "^11.1.0"
+  },
+  "devDependencies": {
+    "ndb": "^1.1.5"
   }
 }
