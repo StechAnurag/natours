@@ -21,15 +21,6 @@ app.use('/api/v1/users', userRouter);
 
 // 404 - NOT FOUND ROUTE
 app.all('*', (req, res, next) => {
-  // res.status(404).json({
-  //   status: 'fail',
-  //   message: `Reuested resource, ${req.originalUrl} not found!`
-  // });
-
-  // const err = new Error(`Reuested resource, ${req.originalUrl} not found!`);
-  // err.statusCode = 404;
-  // err.status = 'fail';
-  // next(err);
   next(new AppError(`Reuested resource, ${req.originalUrl} not found!`, 404));
 });
 
