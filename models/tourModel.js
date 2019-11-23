@@ -30,7 +30,7 @@ const tourSchema = new mongoose.Schema(
     },
     ratingsAverage: {
       type: Number,
-      default: 4.5,
+      default: 4.0,
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be beolw 5.0']
     },
@@ -83,7 +83,7 @@ const tourSchema = new mongoose.Schema(
 );
 
 tourSchema.virtual('durationWeeks').get(function() {
-  return this.duration / 7;
+  return Math.ceil(this.duration / 7);
 });
 
 // DOCUMENT MIDDLEWARE : runs before .save() and .create()

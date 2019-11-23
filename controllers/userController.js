@@ -1,3 +1,6 @@
+const catchAsync = require('./../utils/catchAsync');
+const User = require('./../models/userModel');
+
 module.exports = {
   // route param middleware
   checkID: function(req, res, next, paramVal) {
@@ -10,16 +13,16 @@ module.exports = {
     // }
     next();
   },
-  getAllUsers: function(req, res) {
+  getAllUsers: catchAsync(async (req, res) => {
+    const users = await User.find();
     res.status(200).json({
       status: 'success',
-      requestedAt: req.requestTime,
-      results: 4,
+      numOfUsers: 4,
       data: {
-        data: 'ALL USERS'
+        users
       }
     });
-  },
+  }),
 
   getUser: function(req, res) {
     const id = req.params.id * 1;
