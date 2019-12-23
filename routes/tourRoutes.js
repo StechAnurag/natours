@@ -10,7 +10,7 @@ const {
   getTourStats,
   getMonthlyPlan
 } = require('../controllers/tourController');
-const { checkAuth } = require('../controllers/authController');
+const { checkAuth, checkRole } = require('../controllers/authController');
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 router.route('/tour-stats').get(getTourStats);
@@ -19,12 +19,12 @@ router.route('/monthly-plan/:year').get(getMonthlyPlan);
 router
   .route('/')
   .get(checkAuth, getAllTours)
-  .post(createTour);
+  .post(checkAuth, createTour);
 
 router
   .route('/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+  .get(checkAuth, getTour)
+  .patch(checkAuth, updateTour)
+  .delete(checkAuth, checkRole('admin', 'lead-guide'), deleteTour); // only these two roles have permission to delete a tour
 
 module.exports = router;
