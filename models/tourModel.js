@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+//const User = require('./userModel');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -99,6 +100,13 @@ const tourSchema = new mongoose.Schema(
         description: String,
         day: Number
       }
+    ],
+    //guides: Array // earlier used for embedding guides into tours
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      }
     ]
   },
   {
@@ -117,9 +125,24 @@ tourSchema.pre('save', function(next) {
   next();
 });
 
+/* tourSchema.pre('save', async function(next) {
+  const guidesPromises = this.guides.map(async id => await User.findById(id));
+  this.guides = await Promise.all(guidesPromises);
+  next();
+}); */
+
 // QUERY MIDDLEWARE : runs before / after a query
 tourSchema.pre(/^find/, function(next) {
   this.find({ secretTour: { $ne: true } });
+
+  next();
+});
+// Always populate the guides field
+tourSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt'
+  });
 
   next();
 });

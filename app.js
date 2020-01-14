@@ -10,6 +10,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
@@ -61,7 +62,7 @@ app.use(express.static(`${__dirname}/public`));
 app.get('/', (req, res) => res.send('<h1>Welcome to Natours</h1>'));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-
+app.use('/api/v1/reviews', reviewRouter);
 // 404 - NOT FOUND ROUTE
 app.all('*', (req, res, next) => {
   next(new AppError(`Reuested resource, ${req.originalUrl} not found!`, 404));
