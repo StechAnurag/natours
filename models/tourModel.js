@@ -115,8 +115,16 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// Virtual Property durationweeks
 tourSchema.virtual('durationWeeks').get(function() {
   return Math.ceil(this.duration / 7);
+});
+
+// Virtual Populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
 });
 
 // DOCUMENT MIDDLEWARE : runs before .save() and .create()
