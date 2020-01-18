@@ -23,27 +23,7 @@ exports.checkID = (req, res, next, paramVal) => {
   next();
 };
 
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-  res.status(200).json({
-    status: 'success',
-    numOfUsers: users.length,
-    data: {
-      users
-    }
-  });
-});
-
-exports.getUser = (req, res) => {
-  const id = req.params.id * 1;
-  res.status(200).json({
-    status: 'success',
-    data: {
-      data: id
-    }
-  });
-};
-exports.createUser = (req, res) => {
+exports.createUser = (req, res, next) => {
   // const newId = Users[Users.length - 1].id + 1;
   // const newUser = Object.assign({ id: newId }, req.body);
   //Users.push(newUser);
@@ -53,6 +33,11 @@ exports.createUser = (req, res) => {
       user: 'newUser'
     }
   });
+};
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -79,15 +64,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateUser = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user: '<Updated User here...>'
-    }
-  });
-};
-
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
   res.status(204).json({
@@ -96,4 +72,8 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// DO NOT UPDATE PASSWORD with this!
+exports.updateUser = factory.updateOne(User);
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
 exports.deleteUser = factory.deleteOne(User);

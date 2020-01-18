@@ -10,17 +10,19 @@ router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours);
 router.route('/tour-stats').get(tourController.getTourStats);
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(checkAuth, checkRole('admin', 'lead-guide', 'guide'), tourController.getMonthlyPlan);
 
 router
   .route('/')
-  .get(checkAuth, tourController.getAllTours)
-  .post(checkAuth, tourController.createTour);
+  .get(tourController.getAllTours)
+  .post(checkAuth, checkRole('admin', 'lead-guide'), tourController.createTour);
 
 router
   .route('/:id')
-  .get(checkAuth, tourController.getTour)
-  .patch(checkAuth, tourController.updateTour)
+  .get(tourController.getTour)
+  .patch(checkAuth, checkRole('admin', 'lead-guide'), tourController.updateTour)
   .delete(checkAuth, checkRole('admin', 'lead-guide'), tourController.deleteTour);
 // only these two roles have permission to delete a tour
 
