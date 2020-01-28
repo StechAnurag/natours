@@ -129,6 +129,9 @@ tourSchema.index({ price: 1, ratingsAverage: -1 });
 // Indexing the slug fiels
 tourSchema.index({ slug: 1 });
 
+// Indexing for geoSpatial query
+tourSchema.index({ startLocation: '2dsphere' });
+
 // Virtual Property durationweeks
 tourSchema.virtual('durationWeeks').get(function() {
   return Math.ceil(this.duration / 7);
@@ -171,8 +174,12 @@ tourSchema.pre(/^find/, function(next) {
 
 // AGGREGATION MIDDLEWARE : runs before / after an aggregation
 tourSchema.pre('aggregate', function(next) {
-  //console.log(this.pipeline());
+  //console.log('$geoNear' in this.pipeline()[0]);
+  //console.log(this.pipeline()[0].hasOwnProperty('$geoNear'));
+  if (this.pipeline()[0].hasOwnProperty('$geoNear')) return next();
+
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  //console.log(this.pipeline());
   next();
 });
 const Tour = mongoose.model('Tour', tourSchema);
