@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,7 +15,13 @@ const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 // 1) GLOBAL MIDDLEWARES
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(`${__dirname}/public`));
 
 // set Security HTTP headers
 app.use(helmet());
@@ -55,11 +62,8 @@ app.use(
   })
 );
 
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
-
 // 2) ROUTES
-app.get('/', (req, res) => res.send('<h1>Welcome to Natours</h1>'));
+app.get('/', (req, res) => res.render('base', { tour: 'The Fores Hiker' }));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
