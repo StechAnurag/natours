@@ -4,39 +4,18 @@ html(lang='en')
     meta(charset='UTF-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     meta(http-equiv='X-UA-Compatible', content='ie=edge')
-    link(rel='stylesheet', href='css/style.css')
-    link(rel='shortcut icon', href='img/favicon.png', type='image/x-icon')
+    link(rel='stylesheet', href='/css/style.css')
+    link(rel='shortcut icon', href='/img/favicon.png', type='image/x-icon')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
-    title Natours | Exciting Tours
+    title Natours | #{title}
 
   body
     // HEADER
-    header.header
-      nav.nav.nav--tours
-        a.nav__el(href="#") All Tours
-      //- no need to write like div.className  below when we have to declare a div
-      .header__logo 
-        img(src="img/logo-white.png", alt="logo")
-      nav.nav.nav__user
-        //- a.nav__el(href="#") My Bookings
-        //- a.nav__el(href="#")
-        //-   img.nav__user-img(src="img/users/default.jpg" alt="user__image")
-        //-   span Anurag
-        button.nav__el Log In
-        button.nav__el.nav__el--cta Sign Up
+    include _header
 
     // CONTENT
-    section.overview
-      h1= tour
+    block content
+      h1 This is placeholder Text
     
     // FOOTER
-    footer.footer
-      .footer_logo
-        img(src="img/logo-green.png", alt="logo")
-      ul.footer__nav
-        li: a(href="#") About us
-        li: a(href="#") Download App
-        li: a(href="#") Become a guide
-        li: a(href="#") Careers
-        li: a(href="#") Contact
-      p.footer__copyright &copy; by Anurag Shrivastava | All Rights reserved.
+    include _footer
