@@ -1,4 +1,8 @@
-const login = async (email, password) => {
+import '@babel/polyfill';
+import axios from 'axios';
+import { showAlert } from './alert';
+
+export const login = async (email, password) => {
   try {
     const result = await axios({
       method: 'POST',
@@ -8,15 +12,14 @@ const login = async (email, password) => {
         password
       }
     });
-    console.log(result.data);
+
+    if (result.data.status === 'success') {
+      showAlert('success', 'LoggedIn successfully!!');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1000);
+    }
   } catch (err) {
-    console.log(err.response.data);
+    showAlert('error', err.response.data.message);
   }
 };
-
-document.querySelector('.form').addEventListener('submit', e => {
-  e.preventDefault();
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  login(email, password);
-});

@@ -110,6 +110,33 @@ exports.checkAuth = catchAsync(async (req, res, next) => {
   next();
 });
 
+// Only for rendered pages, No errors!
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies && req.cookies.jwt) {
+    // 1) Verify the token
+    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+
+    // 2) check if user still exists
+    const user = await User.findById(decoded.id);
+    if (!user) return next();
+
+    // 3) check if user has changed password after issue of token
+    if (user.checkPassChanged(decoded.iat)) return next();
+
+    // THERE IS A LOGGED IN USER
+    res.locals.user = user;
+    return next();
+  }
+  next();
+});
+
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000), // auto expire this cookie in 10s
+    httpOnly: true
+  });
+};
+
 exports.checkRole = (...roles) => {
   return (req, res, next) => {
     // roles ['admin', 'lead-guide']  - has access to roles array due to closure

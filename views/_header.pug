@@ -5,9 +5,11 @@ header.header
   .header__logo 
     img(src="/img/logo-white.png", alt="logo")
   nav.nav.nav__user
-    //- a.nav__el(href="#") My Bookings
-    //- a.nav__el(href="#")
-    //-   img.nav__user-img(src="img/users/default.jpg" alt="user__image")
-    //-   span Anurag
-    a(href="/login").nav__el Log In
-    a(href="#").nav__el.nav__el--cta Sign Up
+    if user
+      a.nav__el.nav__el--logout(href="#") Log out
+      a.nav__el(href="#")
+        img.nav__user-img(src=`/img/users/${user.photo ? user.photo : 'default.jpg'}` alt=`Photo of ${user.name}`)
+        span= user.name.split(' ')[0]
+    else
+      a(href="/login").nav__el Log In
+      a(href="#").nav__el.nav__el--cta Sign Up
