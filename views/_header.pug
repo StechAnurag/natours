@@ -1,12 +1,12 @@
 header.header
   nav.nav.nav--tours
-    a.nav__el(href='/') All Tours
-  //- no need to write like div.className  below when we have to declare a div
+    a.nav__el(href="/") All Tours
+  //- no need to write like div.className when we have to declare a div
   .header__logo 
     img(src="/img/logo-white.png", alt="logo")
   nav.nav.nav__user
     if user
-      a.nav__el.nav__el--logout(href="#") Log out
+      a.nav__el.nav__el--logout Log out
       a.nav__el(href="#")
         img.nav__user-img(src=`/img/users/${user.photo ? user.photo : 'default.jpg'}` alt=`Photo of ${user.name}`)
         span= user.name.split(' ')[0]

@@ -111,30 +111,35 @@ exports.checkAuth = catchAsync(async (req, res, next) => {
 });
 
 // Only for rendered pages, No errors!
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies && req.cookies.jwt) {
-    // 1) Verify the token
-    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+    try {
+      // 1) Verify the token
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
 
-    // 2) check if user still exists
-    const user = await User.findById(decoded.id);
-    if (!user) return next();
+      // 2) check if user still exists
+      const user = await User.findById(decoded.id);
+      if (!user) return next();
 
-    // 3) check if user has changed password after issue of token
-    if (user.checkPassChanged(decoded.iat)) return next();
+      // 3) check if user has changed password after issue of token
+      if (user.checkPassChanged(decoded.iat)) return next();
 
-    // THERE IS A LOGGED IN USER
-    res.locals.user = user;
-    return next();
+      // THERE IS A LOGGED IN USER
+      res.locals.user = user;
+      return next();
+    } catch (err) {
+      return next();
+    }
   }
   next();
-});
+};
 
 exports.logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10 * 1000), // auto expire this cookie in 10s
+    expires: new Date(Date.now() + 5 * 1000), // auto expire this cookie in 5s
     httpOnly: true
   });
+  res.status(200).json({ status: 'success' });
 };
 
 exports.checkRole = (...roles) => {
