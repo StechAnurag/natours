@@ -43,6 +43,8 @@ app.use('/api', limiter); // only protect APIs routes
 
 // Body Parser, reading data from body into req.body
 app.use(express.json({ limit: '10Kb' }));
+// Read URLencoded form Data
+app.use(express.urlencoded({ extended: true, limit: '10Kb' }));
 // Cookie Parser to read cookie
 app.use(cookieParser());
 
