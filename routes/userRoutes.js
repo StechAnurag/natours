@@ -1,15 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {
-  getAllUsers,
-  getUser,
-  createUser,
-  updateUser,
-  deleteUser,
-  updateMe,
-  deleteMe,
-  getMe
-} = require('../controllers/userController');
+const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
 
 router.post('/signup', authController.signup);
@@ -25,9 +16,14 @@ router.patch('/reset-password/:token', authController.resetPassword);
 router.use(authController.checkAuth);
 
 router.patch('/change-password', authController.changePassword);
-router.get('/me', getMe, getUser);
-router.patch('/updateme', updateMe);
-router.delete('/delete-account', deleteMe);
+router.get('/me', userController.getMe, userController.getUser);
+router.patch(
+  '/updateme',
+  userController.uploadUserPhoto,
+  userController.resizeUserPhoto,
+  userController.updateMe
+);
+router.delete('/delete-account', userController.deleteMe);
 
 /*
  * Restrict the below routes : to Admin
@@ -37,13 +33,13 @@ router.use(authController.checkRole('admin'));
 
 router
   .route('/')
-  .get(getAllUsers)
-  .post(createUser);
+  .get(userController.getAllUsers)
+  .post(userController.createUser);
 
 router
   .route('/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+  .get(userController.getUser)
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 
 module.exports = router;

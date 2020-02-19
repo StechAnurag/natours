@@ -21,6 +21,8 @@ const handleJWTError = () => new AppError('Invalid Token, please login again!', 
 
 const handleJWTExpired = () => new AppError('Your token has expired, please login again.', 401);
 
+const handleMulterError = () => new AppError('Error: Image uploading, try again later!', 400);
+
 const sendErrorDev = (err, req, res) => {
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
@@ -92,6 +94,7 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'ValidationError') error = handleValidationErrorDB(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     if (error.name === 'TokenExpiredError') error = handleJWTExpired();
+    if (error.name === 'MulterError') error = handleMulterError();
     sendErrorProd(error, req, res);
   }
 };
