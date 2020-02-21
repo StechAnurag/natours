@@ -28,7 +28,13 @@ router
 router
   .route('/:id')
   .get(tourController.getTour)
-  .patch(checkAuth, checkRole('admin', 'lead-guide'), tourController.updateTour)
+  .patch(
+    checkAuth,
+    checkRole('admin', 'lead-guide'),
+    tourController.uploadTourImages,
+    tourController.resizeTourImages,
+    tourController.updateTour
+  )
   .delete(checkAuth, checkRole('admin', 'lead-guide'), tourController.deleteTour);
 // only these two roles have permission to delete a tour
 
