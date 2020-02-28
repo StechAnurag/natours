@@ -3,7 +3,8 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
-const sendEmail = require('./../utils/email');
+//const sendEmail = require('./../utils/email');
+const Email = require('./../utils/email');
 const User = require('./../models/userModel');
 
 const signToken = id => {
@@ -42,6 +43,10 @@ module.exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     role: req.body.role
   });
+
+  // Send welcome email
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await new Email(newUser, url).sendWelcome();
 
   createAndSendToken(newUser, 201, res);
   /* const token = signToken(newUser._id);
@@ -167,14 +172,15 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 3) send it to user's email
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/reset-password/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request wit your new password and password confirm to : ${resetURL}.\n If you didn't forget your password, please ignore this email`;
+  //const message = `Forgot your password? Submit a PATCH request wit your new password and password confirm to : ${resetURL}.\n If you didn't forget your password, please ignore this email`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10mins)',
-      message
-    });
+    await new Email(user, resetURL).sendPassReset();
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Your password reset token (valid for 10mins)',
+    //   message
+    // });
 
     return res.status(200).json({
       status: 'success',
