@@ -8878,6 +8878,72 @@ function () {
 }();
 
 exports.updateSettings = updateSettings;
+},{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"payment.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.bookTour = void 0;
+
+var _axios = _interopRequireDefault(require("axios"));
+
+var _alert = require("./alert");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var stripe = Stripe('pk_test_8VxjhAJtAKBPvjpAeA4lBQu7003F9KKF55');
+
+var bookTour =
+/*#__PURE__*/
+function () {
+  var _ref = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee(tourId) {
+    var session;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return (0, _axios.default)("http://127.0.0.1:5000/api/v1/bookings/checkout-session/".concat(tourId));
+
+          case 3:
+            session = _context.sent;
+            _context.next = 6;
+            return stripe.redirectToCheckout({
+              sessionId: session.data.session.id
+            });
+
+          case 6:
+            _context.next = 12;
+            break;
+
+          case 8:
+            _context.prev = 8;
+            _context.t0 = _context["catch"](0);
+            console.log(_context.t0);
+            (0, _alert.showAlert)('error', _context.t0);
+
+          case 12:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[0, 8]]);
+  }));
+
+  return function bookTour(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+exports.bookTour = bookTour;
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -8886,6 +8952,8 @@ var _login = require("./login");
 var _map = require("./map");
 
 var _updateSettings = require("./updateSettings");
+
+var _payment = require("./payment");
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -8896,7 +8964,8 @@ var mapDiv = document.getElementById('map');
 var loginForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout');
 var userDataForm = document.querySelector('.form-user-data');
-var passwordForm = document.querySelector('.form-user-settings'); // DELEGATION
+var passwordForm = document.querySelector('.form-user-settings');
+var bookBtn = document.getElementById('book_tour'); // DELEGATION
 
 if (mapDiv) {
   var locations = JSON.parse(mapDiv.dataset.locations);
@@ -8975,7 +9044,13 @@ if (passwordForm) {
     };
   }());
 }
-},{"./login":"login.js","./map":"map.js","./updateSettings":"updateSettings.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+if (bookBtn) bookBtn.addEventListener('click', function (e) {
+  e.target.textContent = 'Processing...';
+  var tourId = e.target.dataset.tourId;
+  (0, _payment.bookTour)(tourId);
+});
+},{"./login":"login.js","./map":"map.js","./updateSettings":"updateSettings.js","./payment":"payment.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -9003,7 +9078,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53714" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59164" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

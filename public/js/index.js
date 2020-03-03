@@ -1,6 +1,7 @@
 import { login, logout } from './login';
 import { displayMap } from './map';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './payment';
 
 // DOM ELEMENTS
 const mapDiv = document.getElementById('map');
@@ -8,6 +9,7 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const passwordForm = document.querySelector('.form-user-settings');
+const bookBtn = document.getElementById('book_tour');
 
 // DELEGATION
 if (mapDiv) {
@@ -60,3 +62,10 @@ if (passwordForm) {
     document.querySelector('.btn--save-password').removeAttribute('disabled');
   });
 }
+
+if (bookBtn)
+  bookBtn.addEventListener('click', e => {
+    e.target.textContent = 'Processing...';
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
+  });
