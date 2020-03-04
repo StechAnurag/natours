@@ -5,16 +5,15 @@ const bookingController = require('./../controllers/bookingController');
 
 router.use(authController.isLoggedIn);
 
-router.get(
-  '/',
-  bookingController.bookingSuccess,
-  authController.isLoggedIn,
-  viewController.getOverview
-);
-router.get('/tour/:slug', authController.isLoggedIn, viewController.getTour);
-router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
-router.get('/me', authController.checkAuth, viewController.getAccount);
-router.get('/my-tours', authController.checkAuth, viewController.getMyTours);
-router.post('/submit-form', authController.checkAuth, viewController.updateUserData);
+router.get('/', bookingController.bookingSuccess, viewController.getOverview);
+
+router.get('/tour/:slug', viewController.getTour);
+router.get('/login', viewController.getLoginForm);
+
+router.use(authController.checkAuth);
+
+router.get('/me', viewController.getAccount);
+router.get('/my-tours', viewController.getMyTours);
+router.post('/submit-form', viewController.updateUserData);
 
 module.exports = router;

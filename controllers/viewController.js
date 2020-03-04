@@ -46,5 +46,5 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUserData = (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
 };

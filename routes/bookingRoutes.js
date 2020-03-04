@@ -5,7 +5,7 @@ const { checkAuth, checkRole } = require('./../controllers/authController');
 router.use(checkAuth);
 router.get('/checkout-session/:tourID', bookingController.getCheckoutSession);
 
-// router.use(checkRole('admin', 'lead-guide'));
+router.use(checkRole('admin', 'lead-guide'));
 
 router
   .route('/')
