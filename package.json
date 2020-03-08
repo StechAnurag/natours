@@ -4,7 +4,8 @@
   "description": "Learning NodeJS ExpressJS and MongoDB",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "ndb server.js",
@@ -41,5 +42,8 @@
   "devDependencies": {
     "ndb": "^1.1.5",
     "parcel-bundler": "^1.12.4"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }
