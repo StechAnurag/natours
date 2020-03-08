@@ -22,14 +22,20 @@ mongoose
   .then(con => console.log('MongoDB connected'));
 
 const port = process.env.PORT || 5000;
-const server = app.listen(port, () =>
-  console.log(`App is ready on : http://127.0.0.1:${port}`)
-);
+const server = app.listen(port, () => console.log(`App is ready on : http://127.0.0.1:${port}`));
 
 process.on('unhandledRejection', err => {
   console.log(`${err.name} : ${err.message}`);
   console.log('UNHANDLED REJECTION : Shutting down ..');
   server.close(() => {
     process.exit(1);
+  });
+});
+
+// Heroku specific
+process.on('SIGTERM', () => {
+  console.log('💔 SIGTERM RECIEVED : Shutting down ..');
+  server.close(() => {
+    console.log('💥 Process Terminated 🤯');
   });
 });
