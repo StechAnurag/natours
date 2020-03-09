@@ -17,6 +17,7 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingController = require('./controllers/bookingController');
 
 const app = express();
 
@@ -59,6 +60,13 @@ const limiter = rateLimit({
   message: 'Too Many Requests from the IP, please try again in an hour'
 });
 app.use('/api', limiter); // only protect APIs routes
+
+// STRIPE : sends body in raw streams cannot be parsed as json naturally.
+app.post(
+  '/checkout-webhook',
+  express.raw({ limit: '100Kb', type: 'application/json' }),
+  bookingController.bookingSuccess
+);
 
 // Body Parser, reading data from body into req.body
 app.use(express.json({ limit: '10Kb' }));

@@ -5,7 +5,7 @@ const bookingController = require('./../controllers/bookingController');
 
 router.use(authController.isLoggedIn);
 
-router.get('/', bookingController.bookingSuccess, viewController.getOverview);
+router.get('/', viewController.getOverview);
 
 router.get('/tour/:slug', viewController.getTour);
 router.get('/login', viewController.getLoginForm);
@@ -13,6 +13,7 @@ router.get('/login', viewController.getLoginForm);
 router.use(authController.checkAuth);
 
 router.get('/me', viewController.getAccount);
+//router.get('/my-tours', bookingController.bookingSuccess, viewController.getMyTours);
 router.get('/my-tours', viewController.getMyTours);
 router.post('/submit-form', viewController.updateUserData);
 
